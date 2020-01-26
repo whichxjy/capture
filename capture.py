@@ -55,8 +55,10 @@ def main():
     # calculate blue [second]
     blue = (255 * now.second) / 59
 
-    # calculate alpha [year]
-    alpha = round(255 * (1 - min(1, (now.year - 2020) / (10000 - 2020))))
+    # calculate alpha [days]
+    begin_datetime = datetime.datetime(2020, 1, 1)
+    end_datetime = datetime.datetime(9999, 1, 1)
+    alpha = round(255 * (1 - min(1, (now - begin_datetime).days / (end_datetime - begin_datetime).days)))
 
     for x in range(-width // 2, width // 2):
         for y in range(-height // 2, height // 2):
@@ -65,6 +67,7 @@ def main():
             red = int((dist / max_dist) * 255 + max_shift - (max_shift - min_shift) * (now.hour / 24))
             if red > 255:
                 red -= 255
+
             # calculate green [minute]
             beta = (now.minute * math.pi) / 30
             angle = (3 * math.pi / 2 - calculate_theta(x, y)) + beta
@@ -73,6 +76,7 @@ def main():
             elif angle < 0:
                 angle += 2 * math.pi
             green = int(round((angle / (2 * math.pi)) * 255))
+
             # set rgba
             data[y + height // 2, x + width // 2] = (red, green, blue, alpha)
 
